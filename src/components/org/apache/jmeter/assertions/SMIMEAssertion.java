@@ -104,7 +104,6 @@ class SMIMEAssertion {
                     || msg.isMimeType("application/x-pkcs7-mime")) { // $NON-NLS-1$
                 s = new SMIMESignedParser(new BcDigestCalculatorProvider(), msg);
             }
-
             if (null != s) {
                 log.debug("Found signature");
 

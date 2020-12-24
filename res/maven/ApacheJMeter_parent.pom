@@ -52,6 +52,7 @@ under the License.
 
     <properties>
       <!-- these must agree with the definitions in build.properties -->
+      <dubbo.version>2.5.3</dubbo.version>
       <accessors-smart.version>1.2</accessors-smart.version>
       <apache-bsf.version>2.4.0</apache-bsf.version>
       <asm.version>7.0</asm.version>
@@ -128,6 +129,11 @@ under the License.
     </properties>
 
     <dependencies>
+      <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>dubbo</artifactId>
+        <version>${dubbo.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>

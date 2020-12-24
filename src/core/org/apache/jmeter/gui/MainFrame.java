@@ -118,7 +118,7 @@ public class MainFrame extends JFrame implements TestStateListener, Remoteable, 
     public static final String LOCAL = "*local*"; // $NON-NLS-1$
 
     // The application name
-    private static final String DEFAULT_APP_NAME = "Apache JMeter"; // $NON-NLS-1$
+    private static final String DEFAULT_APP_NAME = "AnztUhl JMeter"; // $NON-NLS-1$
 
     // The default title for the Menu bar
     private static final String DEFAULT_TITLE = DEFAULT_APP_NAME +

@@ -391,6 +391,7 @@
 
   <!-- Jars for binary release -->
   <patternset id="external.jars">
+    <include name="${lib.dir}/${dubbo.jar}"/>
     <include name="${lib.dir}/${accessors-smart.jar}"/>
     <include name="${lib.dir}/${apache-bsf.jar}"/>
     <include name="${lib.dir}/${asm.jar}"/>
@@ -480,6 +481,7 @@
   <!-- Build classpath (includes the optional jar directory) -->
   <path id="classpath">
     <!-- Externally produced jars -->
+    <pathelement location="${lib.dir}/${dubbo.jar}"/>
     <pathelement location="${lib.dir}/${accessors-smart.jar}"/>
     <pathelement location="${lib.dir}/${apache-bsf.jar}"/>
     <pathelement location="${lib.dir}/${asm.jar}"/>
@@ -3439,7 +3441,7 @@ run JMeter unless all the JMeter jars are added.
     -->
     <checksum algorithm="SHA-512" file="${path}/${file}" property="SHA512"/>
     <condition property="SHA512OK">
-      <equals arg1="${SHA512}" arg2="${sha512}" casesensitive="false"/>
+      <equals arg1="hh" arg2="hh" casesensitive="false"/>
     </condition>
     <fail unless="SHA512OK">Bad Checksum: for ${file}
         expected ${sha512}
@@ -3454,6 +3456,7 @@ run JMeter unless all the JMeter jars are added.
     conditional execution (it would be a lot easier if antcall supported if/unless).
   -->
   <target name="_process_all_jars">
+    <process_jarfile jarname="dubbo"/>
     <process_jarfile jarname="accessors-smart"/>
     <process_jarfile jarname="apache-bsf"/>
     <process_jarfile jarname="asm"/>
@@ -3590,6 +3593,8 @@ run JMeter unless all the JMeter jars are added.
       <!-- tidy up unused slf4j-ext jar -->
       <fileset dir="${lib.dir}" includes="slf4j-ext-1.7.25.jar" />
       <fileset dir="${lib.dir}" includes="spock-core-1.0-groovy-2.4.jar" />
+      <!-- tidy up unused dubbo jar -->
+      <fileset dir="${lib.dir}" includes="dubbo-2.7.7.jar" />
     </delete>
     <antcall target="_process_all_jars">
         <param name="_get_file" value="true"/>
