@@ -401,6 +401,9 @@
     <include name="${lib.dir}/${zkclient.jar}"/>
     <include name="${lib.dir}/${gson.jar}"/>
     <include name="${lib.dir}/${guava.jar}"/>
+    <include name="${lib.dir}/${jline.jar}"/>
+    <include name="${lib.dir}/${netty.jar}"/>
+    <include name="${lib.dir}/${log4j-over-slf4j.jar}"/>
     <include name="${lib.dir}/${accessors-smart.jar}"/>
     <include name="${lib.dir}/${apache-bsf.jar}"/>
     <include name="${lib.dir}/${asm.jar}"/>
@@ -496,6 +499,9 @@
     <pathelement location="${lib.dir}/${zkclient.jar}"/>
     <pathelement location="${lib.dir}/${gson.jar}"/>
     <pathelement location="${lib.dir}/${guava.jar}"/>
+    <pathelement location="${lib.dir}/${jline.jar}"/>
+    <pathelement location="${lib.dir}/${netty.jar}"/>
+    <pathelement location="${lib.dir}/${log4j-over-slf4j.jar}"/>
     <pathelement location="${lib.dir}/${accessors-smart.jar}"/>
     <pathelement location="${lib.dir}/${apache-bsf.jar}"/>
     <pathelement location="${lib.dir}/${asm.jar}"/>
@@ -1872,6 +1878,7 @@ run JMeter unless all the JMeter jars are added.
       <generate_src_artifact artifactname="jorphan" srcdir="${src.jorphan}" targetdir="${maven.dir}" />
       <generate_src_artifact artifactname="ApacheJMeter_ldap" srcdir="${src.ldap}" targetdir="${maven.dir}" />
       <generate_src_artifact artifactname="ApacheJMeter_tcp" srcdir="${src.tcp}" targetdir="${maven.dir}" />
+      <generate_src_artifact artifactname="ApacheJMeter_dubbo" srcdir="${src.dubbo}" targetdir="${maven.dubbo}" />
       <generate_src_artifact artifactname="ApacheJMeter_mail" srcdir="${src.mail}" targetdir="${maven.dir}" />
       <generate_src_artifact artifactname="ApacheJMeter_jms" srcdir="${src.jms}" targetdir="${maven.dir}" />
       <generate_src_artifact artifactname="ApacheJMeter_native" srcdir="${src.native}" targetdir="${maven.dir}" />
@@ -3513,6 +3520,9 @@ run JMeter unless all the JMeter jars are added.
     <process_jarfile jarname="zkclient"/>
     <process_jarfile jarname="gson"/>
     <process_jarfile jarname="guava"/>
+    <process_jarfile jarname="jline"/>
+    <process_jarfile jarname="netty"/>
+    <process_jarfile jarname="log4j-over-slf4j"/>
     <process_jarfile jarname="accessors-smart"/>
     <process_jarfile jarname="apache-bsf"/>
     <process_jarfile jarname="asm"/>

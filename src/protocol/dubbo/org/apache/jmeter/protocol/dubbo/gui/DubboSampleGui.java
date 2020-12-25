@@ -92,7 +92,7 @@ public class DubboSampleGui extends AbstractSamplerGui {
      */
     @Override
     public String getStaticLabel() {
-        return "Dubbo Sample";
+        return "mDubbo Sample";
     }
 
     /**
