@@ -164,6 +164,7 @@
       <class location="${dest.jar}/ApacheJMeter_ftp.jar"/>
       <class location="${dest.jar}/ApacheJMeter_functions.jar"/>
       <class location="${dest.jar}/ApacheJMeter_http.jar"/>
+      <class location="${dest.jar}/ApacheJMeter_dubbo.jar"/>
       <class location="${dest.jar}/ApacheJMeter_java.jar"/>
       <class location="${dest.jar}/ApacheJMeter_jdbc.jar"/>
       <class location="${dest.jar}/ApacheJMeter_jms.jar"/>
@@ -225,6 +226,7 @@
   <property name="src.dir" value="src"/>
   <property name="src.core" value="src/core"/>
   <property name="src.http" value="src/protocol/http"/>
+  <property name="src.dubbo" value="src/protocol/dubbo"/>
   <property name="src.ftp" value="src/protocol/ftp"/>
   <property name="src.test" value="test/src"/>
   <property name="src.jdbc" value="src/protocol/jdbc"/>
@@ -253,6 +255,7 @@
     <pathelement location="${src.components}"/>
     <pathelement location="${src.functions}"/>
     <pathelement location="${src.http}"/>
+    <pathelement location="${src.dubbo}"/>
     <pathelement location="${src.ftp}"/>
     <pathelement location="${src.jdbc}"/>
     <pathelement location="${src.java}"/>
@@ -271,6 +274,7 @@
   <property name="build.dir" value="build"/>
   <property name="build.core" value="build/core"/>
   <property name="build.http" value="build/protocol/http"/>
+  <property name="build.dubbo" value="build/protocol/dubbo"/>
   <property name="build.ftp" value="build/protocol/ftp"/>
   <property name="build.jdbc" value="build/protocol/jdbc"/>
   <property name="build.java" value="build/protocol/java"/>
@@ -392,6 +396,11 @@
   <!-- Jars for binary release -->
   <patternset id="external.jars">
     <include name="${lib.dir}/${dubbo.jar}"/>
+    <include name="${lib.dir}/${javassist.jar}"/>
+    <include name="${lib.dir}/${zookeeper.jar}"/>
+    <include name="${lib.dir}/${zkclient.jar}"/>
+    <include name="${lib.dir}/${gson.jar}"/>
+    <include name="${lib.dir}/${guava.jar}"/>
     <include name="${lib.dir}/${accessors-smart.jar}"/>
     <include name="${lib.dir}/${apache-bsf.jar}"/>
     <include name="${lib.dir}/${asm.jar}"/>
@@ -482,6 +491,11 @@
   <path id="classpath">
     <!-- Externally produced jars -->
     <pathelement location="${lib.dir}/${dubbo.jar}"/>
+    <pathelement location="${lib.dir}/${javassist.jar}"/>
+    <pathelement location="${lib.dir}/${zookeeper.jar}"/>
+    <pathelement location="${lib.dir}/${zkclient.jar}"/>
+    <pathelement location="${lib.dir}/${gson.jar}"/>
+    <pathelement location="${lib.dir}/${guava.jar}"/>
     <pathelement location="${lib.dir}/${accessors-smart.jar}"/>
     <pathelement location="${lib.dir}/${apache-bsf.jar}"/>
     <pathelement location="${lib.dir}/${asm.jar}"/>
@@ -743,6 +757,30 @@
     <native2ascii src="${src.http}" dest="${build.http}" includes="**/*.properties" encoding="UTF-8"/>
   </target>
 
+  <target name="compile-dubbo" depends="compile-jorphan,compile-core,compile-components" description="Compile components specific to Dubbo sampling.">
+    <mkdir dir="${build.dubbo}"/>
+    <!-- Directory needs to exist, or jar will fail -->
+    <javac srcdir="${src.dubbo}" destdir="${build.dubbo}" source="${src.java.version}" optimize="${optimize}" debug="on" target="${target.java.version}"
+           includeAntRuntime="${includeAntRuntime}" deprecation="${deprecation}" encoding="${encoding}">
+      <include name="**/*.java"/>
+      <classpath>
+        <pathelement location="${build.jorphan}"/>
+        <pathelement location="${build.core}"/>
+        <pathelement location="${build.components}"/>
+        <path refid="classpath"/>
+        <pathelement location="${lib.dir}/${jcl-over-slf4j.jar}"/>
+        <pathelement location="${lib.dir}/${log4j-api.jar}"/>
+        <pathelement location="${lib.dir}/${log4j-core.jar}"/>
+      </classpath>
+    </javac>
+
+    <!-- Convert the message files from UTF-8 to ASCII. This can be removed
+    after upgrading to Java 9+ as the minimum JRE and specifying the encoding
+    when loading the ResourceBundles -->
+    <native2ascii src="${src.dubbo}" dest="${build.dubbo}" includes="**/*.properties" encoding="UTF-8"/>
+  </target>
+
+
   <!-- Tests need main classes -->
   <target name="compile-tests" depends="compile" description="Compile test components">
     <mkdir dir="${build.test}"/>
@@ -787,6 +825,7 @@
         <pathelement location="${build.core}"/>
         <pathelement location="${build.components}"/>
         <pathelement location="${build.http}"/>
+        <pathelement location="${build.dubbo}"/>
         <pathelement location="${build.ftp}"/>
         <pathelement location="${build.functions}"/>
         <pathelement location="${build.java}"/>
@@ -936,7 +975,7 @@
     <native2ascii src="${src.tcp}" dest="${build.tcp}" includes="**/*.properties" encoding="UTF-8"/>
   </target>
 
-  <target name="compile-protocols" depends="compile-http,compile-ftp,compile-jdbc,compile-java,compile-ldap,compile-mail,compile-tcp" description="Compile all protocol-specific components."/>
+  <target name="compile-protocols" depends="compile-http,compile-dubbo,compile-ftp,compile-jdbc,compile-java,compile-ldap,compile-mail,compile-tcp" description="Compile all protocol-specific components."/>
 
   <target name="compile-examples" depends="compile-jorphan,compile-core" description="Compile example components.">
     <mkdir dir="${build.examples}"/>
@@ -1185,6 +1224,16 @@ run JMeter unless all the JMeter jars are added.
         fullpath="META-INF/LICENSE" />
       <fileset dir="${build.http}" includes="**/*.class"/>
       <fileset dir="${build.http}" includes="**/*.properties" />
+    </jar>
+
+    <!-- dubbo -->
+    <jar jarfile="${dest.jar}/ApacheJMeter_dubbo.jar" manifest="${build.dir}/MANIFEST_BIN.MF">
+      <zipfileset file="${resources.meta-inf}/default.notice"
+                  fullpath="META-INF/NOTICE" />
+      <zipfileset file="${resources.meta-inf}/default.license"
+                  fullpath="META-INF/LICENSE" />
+      <fileset dir="${build.dubbo}" includes="**/*.class"/>
+      <fileset dir="${build.dubbo}" includes="**/*.properties" />
     </jar>
 
     <!-- ftp -->
@@ -1842,6 +1891,7 @@ run JMeter unless all the JMeter jars are added.
   <target name="generate_javadoc_artifacts">
       <generate_javadoc_artifact artifactname="ApacheJMeter_core" srcdir="${src.core}" targetdir="${maven.dir}" />
       <generate_javadoc_artifact artifactname="ApacheJMeter_http" srcdir="${src.http}" targetdir="${maven.dir}" />
+      <generate_javadoc_artifact artifactname="ApacheJMeter_dubbo" srcdir="${src.dubbo}" targetdir="${maven.dir}" />
       <generate_javadoc_artifact artifactname="ApacheJMeter_ftp" srcdir="${src.ftp}" targetdir="${maven.dir}" />
       <generate_javadoc_artifact artifactname="ApacheJMeter_jdbc" srcdir="${src.jdbc}" targetdir="${maven.dir}" />
       <generate_javadoc_artifact artifactname="ApacheJMeter_java" srcdir="${src.java}" targetdir="${maven.dir}" />
@@ -2279,6 +2329,7 @@ run JMeter unless all the JMeter jars are added.
     <deployfile stem="ApacheJMeter_ftp"/>
     <deployfile stem="ApacheJMeter_functions"/>
     <deployfile stem="ApacheJMeter_http"/>
+    <deployfile stem="ApacheJMeter_dubbo"/>
     <deployfile stem="ApacheJMeter_java"/>
     <deployfile stem="ApacheJMeter_jdbc"/>
     <deployfile stem="ApacheJMeter_jms"/>
@@ -3457,6 +3508,11 @@ run JMeter unless all the JMeter jars are added.
   -->
   <target name="_process_all_jars">
     <process_jarfile jarname="dubbo"/>
+    <process_jarfile jarname="javassist"/>
+    <process_jarfile jarname="zookeeper"/>
+    <process_jarfile jarname="zkclient"/>
+    <process_jarfile jarname="gson"/>
+    <process_jarfile jarname="guava"/>
     <process_jarfile jarname="accessors-smart"/>
     <process_jarfile jarname="apache-bsf"/>
     <process_jarfile jarname="asm"/>
@@ -3594,7 +3650,7 @@ run JMeter unless all the JMeter jars are added.
       <fileset dir="${lib.dir}" includes="slf4j-ext-1.7.25.jar" />
       <fileset dir="${lib.dir}" includes="spock-core-1.0-groovy-2.4.jar" />
       <!-- tidy up unused dubbo jar -->
-      <fileset dir="${lib.dir}" includes="dubbo-2.7.7.jar" />
+<!--      <fileset dir="${lib.dir}" includes="dubbo-2.5.3.jar" />-->
     </delete>
     <antcall target="_process_all_jars">
         <param name="_get_file" value="true"/>
@@ -3652,6 +3708,7 @@ run JMeter unless all the JMeter jars are added.
                 <fileset dir="${build.junit}"/>
                 <fileset dir="${build.ftp}"/>
                 <fileset dir="${build.http}"/>
+                <fileset dir="${build.dubbo}"/>
                 <fileset dir="${build.java}"/>
                 <fileset dir="${build.jdbc}"/>
                 <fileset dir="${build.jms}"/>
@@ -3832,7 +3889,7 @@ run JMeter unless all the JMeter jars are added.
     <property name="sonar.links.scm" value="http://jmeter.apache.org/svnindex.html" />
     <property name="sonar.links.issue" value="http://jmeter.apache.org/issues.html" />
     <property name="sonar.modules" value="core,http,ftp,java,jdbc,ldap,mail,components,functions,jorphan,tcp,jms,native" />
-    <property name="sonar.java.binaries" value="${build.core},${build.http},${build.core},${build.http},${build.ftp},${build.java},${build.jdbc},${build.ldap},${build.mail},${build.components},${build.functions},${build.jorphan},${build.tcp},${build.jms},${build.native}" />
+    <property name="sonar.java.binaries" value="${build.core},${build.http},${build.dubbo},${build.core},${build.http},${build.ftp},${build.java},${build.jdbc},${build.ldap},${build.mail},${build.components},${build.functions},${build.jorphan},${build.tcp},${build.jms},${build.native}" />
     <property name="sonar.java.libraries" value="lib,lib/opt" />
 
     <property name="sonar.junit.reportsPath" value="reports" />
